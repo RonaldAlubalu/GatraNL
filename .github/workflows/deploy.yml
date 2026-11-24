@@ -1,6 +1,6 @@
 # Puts the site on the server. Runs when main changes, or by hand from the Actions tab.
 # Needs the secrets DEPLOY_HOST and DEPLOY_SSH_KEY (Settings → Secrets and variables → Actions).
-# Optional variables: DEPLOY_USER (default root) and DEPLOY_PATH (default /srv/gatra/public).
+# Optional: DEPLOY_USER (variable or secret, default root) and the variable DEPLOY_PATH (default /srv/gatra/public).
 name: Deploy
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     env:
       HOST: ${{ secrets.DEPLOY_HOST }}
       KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-      REMOTE_USER: ${{ vars.DEPLOY_USER || 'root' }}
+      REMOTE_USER: ${{ vars.DEPLOY_USER || secrets.DEPLOY_USER || 'root' }}
       REMOTE_PATH: ${{ vars.DEPLOY_PATH || '/srv/gatra/public' }}
     steps:
       - uses: actions/checkout@v4
