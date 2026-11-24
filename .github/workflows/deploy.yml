@@ -1,0 +1,42 @@
+# Puts the site on the server. Runs when main changes, or by hand from the Actions tab.
+# Needs the secrets DEPLOY_HOST and DEPLOY_SSH_KEY (Settings → Secrets and variables → Actions).
+# Optional variables: DEPLOY_USER (default root) and DEPLOY_PATH (default /srv/gatra/public).
+name: Deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency: deploy
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HOST: ${{ secrets.DEPLOY_HOST }}
+      KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      REMOTE_USER: ${{ vars.DEPLOY_USER || 'root' }}
+      REMOTE_PATH: ${{ vars.DEPLOY_PATH || '/srv/gatra/public' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build the pages
+        run: node build.mjs
+      - name: Check the settings
+        run: |
+          if [ -z "$HOST" ] || [ -z "$KEY" ]; then
+            echo "::error::The secrets DEPLOY_HOST and DEPLOY_SSH_KEY are not set, so nothing was sent to the server."
+            exit 1
+          fi
+          case "$REMOTE_PATH" in
+            /*/public) ;;
+            *) echo "::error::DEPLOY_PATH must be a full path that ends in /public."; exit 1 ;;
+          esac
+      - name: Send the site to the server
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          ssh -i ~/.ssh/deploy_key "$REMOTE_USER@$HOST" "mkdir -p '$REMOTE_PATH'"
+          rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" public/ "$REMOTE_USER@$HOST:$REMOTE_PATH/"

@@ -9,3 +9,10 @@ The site of Gatra Peshtaz, rebuilt from the Squarespace site as plain pages. The
 
 Still to do before it can replace the old site: the forms post to `/api/form`, which does not
 exist yet. Until then a visitor who sends a form is told to mail instead.
+
+## Deploy
+
+`.github/workflows/deploy.yml` builds the pages and copies `public/` to the server when `main` changes
+(or by hand from the Actions tab). It needs the secrets `DEPLOY_HOST` and `DEPLOY_SSH_KEY`. The folder on
+the server is `/srv/gatra/public` unless the variable `DEPLOY_PATH` says otherwise; the web server (Caddy,
+shared with the Gamer Xperience site) has to serve that folder.
