@@ -22,6 +22,10 @@ jobs:
         with:
           node-version: 22
       - name: Build the pages
+        # Until gatra.nl points at the server, the pages name the test address as their own.
+        # When the site goes live: set the variable SITE_URL to https://gatra.nl, or remove the fallback here.
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://gatra.37-97-128-88.sslip.io' }}
         run: node build.mjs
       - name: Check the settings
         run: |

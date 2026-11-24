@@ -70,3 +70,19 @@ for (const form of document.querySelectorAll('form[data-form]')) {
     for (const el of form.querySelectorAll('label, button[type=submit]')) el.hidden = true;
   });
 }
+
+// Blocks below the first screen fade in when they come into view; not for people who asked for less motion.
+if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const watcher = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('in');
+      watcher.unobserve(entry.target);
+    }
+  }, { rootMargin: '0px 0px -8% 0px' });
+  for (const el of document.querySelectorAll('.band > *, .overlap > *, .said > h2, .reviews, .cta div, .text > h2')) {
+    if (el.getBoundingClientRect().top < innerHeight) continue;
+    el.classList.add('reveal');
+    watcher.observe(el);
+  }
+}
