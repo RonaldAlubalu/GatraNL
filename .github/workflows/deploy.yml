@@ -37,6 +37,12 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "$KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
+          if ! ssh-keygen -y -f ~/.ssh/deploy_key > ~/.ssh/deploy_key.pub 2>/dev/null; then
+            echo "::error::DEPLOY_SSH_KEY is not a usable private key. It must be the whole block from -----BEGIN OPENSSH PRIVATE KEY----- to -----END OPENSSH PRIVATE KEY-----, without a passphrase."
+            exit 1
+          fi
+          echo "Logging in as $REMOTE_USER with the key whose public fingerprint is:"
+          ssh-keygen -lf ~/.ssh/deploy_key.pub
           ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
           ssh -i ~/.ssh/deploy_key "$REMOTE_USER@$HOST" "mkdir -p '$REMOTE_PATH'"
           rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" public/ "$REMOTE_USER@$HOST:$REMOTE_PATH/"
