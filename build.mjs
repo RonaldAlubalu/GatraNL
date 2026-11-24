@@ -32,7 +32,7 @@ for (const file of readdirSync(join(root, 'src/pages'))) {
   const source = read(`src/pages/${file}`);
   const meta = JSON.parse(source.match(/^<!--\s*(\{.*\})\s*-->/)[1]);
   const content = source.replace(/^<!--.*-->\n/, '').replace(/\{\{> (\w+)\}\}/g, (_, name) => read(`src/${name}.html`).trim());
-  const path = slug === 'index' ? '/' : `/${slug}`;
+  const path = slug === 'index' ? '/' : `/${slug}/`;
   paths.push(path);
   const html = withSizes(layout
     .replaceAll('{{title}}', meta.title)

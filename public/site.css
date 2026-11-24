@@ -4,6 +4,8 @@
 @font-face { font-family: Poppins; font-weight: 300; font-style: italic; src: url(/fonts/poppins-300i.woff2) format('woff2'); font-display: swap; }
 @font-face { font-family: Poppins; font-weight: 500; src: url(/fonts/poppins-500.woff2) format('woff2'); font-display: swap; }
 @font-face { font-family: Poppins; font-weight: 600; src: url(/fonts/poppins-600.woff2) format('woff2'); font-display: swap; }
+/* A stand-in with the measurements of Poppins, so the text does not jump when the real font arrives. */
+@font-face { font-family: 'Poppins Fallback'; src: local('Arial'), local('Liberation Sans'), local('Helvetica'); size-adjust: 112.5%; ascent-override: 93%; descent-override: 31%; line-gap-override: 9%; }
 :root {
   --ink: #2b261d; --dark: #2e261a; --pale: #fbf6f1; --sand: #e7d1b5; --line: #d9cdbd; --accent: #8a6a3b;
   --gutter: clamp(20px, 4vw, 64px); --space: clamp(56px, 7vw, 104px); --head: 'Julius Sans One', sans-serif;
@@ -15,7 +17,7 @@
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--bar) + 16px); }
-body { margin: 0; background: #fff; color: var(--ink); font: 300 var(--text)/1.75 Poppins, sans-serif; }
+body { margin: 0; background: #fff; color: var(--ink); font: 300 var(--text)/1.75 Poppins, 'Poppins Fallback', sans-serif; }
 img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-underline-offset: .22em; text-decoration-thickness: 1px; }
 a:hover { text-decoration-thickness: 2px; }
@@ -28,7 +30,7 @@ p { margin: 0 0 1em; }
 h1, h2, h3, .h2, .h4 { font-family: var(--head); font-weight: 400; margin: 0; text-wrap: balance; }
 h1 { font-size: var(--h1); line-height: 1.2; text-align: center; }
 h2, .h2 { font-size: var(--h2); line-height: 1.25; }
-h3 { font-size: var(--h3); line-height: 1.3; }
+h3, .h3 { font-size: var(--h3); line-height: 1.3; }
 .h4 { font-size: var(--h4); line-height: 1.5; letter-spacing: .01em; }
 .center { text-align: center; }
 .large { font-size: var(--large); line-height: 1.75; }
@@ -58,7 +60,7 @@ main > section { position: relative; }
 .hero { display: grid; grid-template-columns: minmax(0, 44fr) minmax(0, 50fr); column-gap: clamp(32px, 5vw, 80px); align-items: center; padding: clamp(40px, 5vw, 72px) var(--gutter) var(--space); max-width: 1500px; margin: 0 auto; }
 .hero-img { width: 100%; }
 .hero-text { max-width: 640px; }
-.hero-text .quote { font: 300 clamp(22px, 18px + 1.05vw, 31px)/1.42 Poppins, sans-serif; text-align: left; margin-bottom: 22px; }
+.hero-text .quote { font: 300 clamp(22px, 18px + 1.05vw, 31px)/1.42 Poppins, 'Poppins Fallback', sans-serif; text-align: left; margin-bottom: 22px; }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 .actions .btn { margin-top: 0; }
 .actions.center { justify-content: center; }
@@ -87,12 +89,12 @@ main > section { position: relative; }
 .overlap.reverse > img { grid-column: 13 / 25; }
 .overlap.reverse > .panel { grid-column: 1 / 14; }
 .overlap.small { padding-top: 0; padding-bottom: calc(var(--space) * .5); max-width: 1200px; }
-.overlap.small .panel h3 { margin-bottom: 12px; }
+.overlap.small .panel .h3 { margin-bottom: 12px; }
 blockquote { margin: 0; }
 blockquote p { margin: 0; }
 
 /* One kind of button: dark. On a dark background it turns light; "outline" is the quieter second choice. */
-.btn { display: inline-block; font: 500 16px/1.2 Poppins, sans-serif; padding: 17px 30px; text-decoration: none; border: 1px solid var(--dark); background: var(--dark); color: #fff; cursor: pointer; margin-top: 12px; transition: background-color .2s, color .2s, border-color .2s; }
+.btn { display: inline-block; font: 500 16px/1.2 Poppins, 'Poppins Fallback', sans-serif; padding: 17px 30px; text-decoration: none; border: 1px solid var(--dark); background: var(--dark); color: #fff; cursor: pointer; margin-top: 12px; transition: background-color .2s, color .2s, border-color .2s; }
 .btn:hover { background: #4d4130; border-color: #4d4130; }
 .btn.light { background: #fff; border-color: #fff; color: var(--dark); }
 .btn.light:hover { background: var(--sand); border-color: var(--sand); }
@@ -129,7 +131,7 @@ blockquote p { margin: 0; }
 .reviews { position: relative; padding-top: 64px; }
 .text > .reviews { max-width: 1100px; margin-bottom: 56px; }
 .reviews-nav { position: absolute; top: 4px; right: 0; display: flex; gap: 10px; }
-.reviews-nav button { width: 46px; height: 46px; border: 1px solid var(--ink); border-radius: 50%; background: #fff; font: 300 26px/1 Poppins, sans-serif; padding: 0 0 3px; cursor: pointer; color: var(--ink); transition: background-color .2s, color .2s; }
+.reviews-nav button { width: 46px; height: 46px; border: 1px solid var(--ink); border-radius: 50%; background: #fff; font: 300 26px/1 Poppins, 'Poppins Fallback', sans-serif; padding: 0 0 3px; cursor: pointer; color: var(--ink); transition: background-color .2s, color .2s; }
 .reviews-nav button:hover:not(:disabled) { background: var(--dark); color: #fff; }
 .reviews-nav button:disabled { opacity: .3; cursor: default; }
 .reviews-track { display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth; }
@@ -157,7 +159,7 @@ blockquote p { margin: 0; }
 .contact .form { grid-column: 13 / 25; }
 .form label { display: block; margin-bottom: 22px; font-weight: 500; font-size: 16px; }
 .form label span { font-size: .88em; font-weight: 300; color: #6b6458; margin-left: 4px; }
-.form input, .form textarea { display: block; width: 100%; margin-top: 6px; font: 300 17px/1.5 Poppins, sans-serif; color: #000; border: 1px solid #a89f92; background: #fff; padding: 13px 15px; border-radius: 0; transition: border-color .2s, box-shadow .2s; }
+.form input, .form textarea { display: block; width: 100%; margin-top: 6px; font: 300 17px/1.5 Poppins, 'Poppins Fallback', sans-serif; color: #000; border: 1px solid #a89f92; background: #fff; padding: 13px 15px; border-radius: 0; transition: border-color .2s, box-shadow .2s; }
 .form textarea { resize: vertical; min-height: 130px; }
 .form input:focus, .form textarea:focus { outline: 0; border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
 .form ::placeholder { color: #8a8378; }
