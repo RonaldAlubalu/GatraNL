@@ -44,5 +44,14 @@ jobs:
           echo "Logging in as $REMOTE_USER with the key whose public fingerprint is:"
           ssh-keygen -lf ~/.ssh/deploy_key.pub
           ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
-          ssh -i ~/.ssh/deploy_key "$REMOTE_USER@$HOST" "mkdir -p '$REMOTE_PATH'"
-          rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" public/ "$REMOTE_USER@$HOST:$REMOTE_PATH/"
+          # The folder may belong to root; then the copy runs through sudo, if the user may use it without a password.
+          if ssh -i ~/.ssh/deploy_key "$REMOTE_USER@$HOST" "mkdir -p '$REMOTE_PATH' 2>/dev/null && test -w '$REMOTE_PATH'"; then
+            REMOTE_RSYNC=rsync
+          elif ssh -i ~/.ssh/deploy_key "$REMOTE_USER@$HOST" "sudo -n true"; then
+            REMOTE_RSYNC="sudo -n rsync"
+            ssh -i ~/.ssh/deploy_key "$REMOTE_USER@$HOST" "sudo -n mkdir -p '$REMOTE_PATH'"
+          else
+            echo "::error::$REMOTE_USER cannot write to $REMOTE_PATH on the server and has no sudo without a password. Give that user ownership of the folder."
+            exit 1
+          fi
+          rsync -rlz --delete --chmod=D755,F644 --rsync-path="$REMOTE_RSYNC" -e "ssh -i ~/.ssh/deploy_key" public/ "$REMOTE_USER@$HOST:$REMOTE_PATH/"
