@@ -61,6 +61,9 @@ main > section { position: relative; }
 .hero-text .quote { font: 300 clamp(22px, 18px + 1.05vw, 31px)/1.42 Poppins, sans-serif; text-align: left; margin-bottom: 22px; }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 .actions .btn { margin-top: 0; }
+.actions.center { justify-content: center; }
+.marathon .eyebrow { margin-bottom: 8px; }
+.text.marathon { padding-bottom: var(--space); }
 
 /* Organisations she worked with and for: names only, in one quiet row. */
 .names { padding: 0 var(--gutter) var(--space); text-align: center; max-width: 1300px; margin: 0 auto; }
