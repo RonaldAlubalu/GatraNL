@@ -80,7 +80,7 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
       watcher.unobserve(entry.target);
     }
   }, { rootMargin: '0px 0px -8% 0px' });
-  for (const el of document.querySelectorAll('.band > *, .overlap > *, .said > h2, .reviews, .cta div, .text > h2')) {
+  for (const el of document.querySelectorAll('.band > *, .overlap > *, .said > h2, .reviews, .cta div, .text > h2, .offer li, .names')) {
     if (el.getBoundingClientRect().top < innerHeight) continue;
     el.classList.add('reveal');
     watcher.observe(el);
