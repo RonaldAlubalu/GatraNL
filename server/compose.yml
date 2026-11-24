@@ -1,0 +1,20 @@
+# The form service. Caddy reaches it as http://gatra-form:8080 over the Docker network "gatra".
+name: gatra
+services:
+  form:
+    build: .
+    container_name: gatra-form
+    restart: unless-stopped
+    environment:
+      SMTP_HOST: smtp.strato.de
+      SMTP_PORT: "465"
+      SMTP_USER: info@gatra.nl
+      SMTP_PASS_FILE: /run/secrets/smtp_password
+      MAIL_FROM: info@gatra.nl
+      MAIL_TO: info@gatra.nl
+    volumes:
+      - ./secret/smtp_password:/run/secrets/smtp_password:ro
+    networks: [gatra]
+networks:
+  gatra:
+    external: true

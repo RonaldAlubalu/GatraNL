@@ -1,5 +1,6 @@
 # Puts the site on the server. Runs when main changes, or by hand from the Actions tab.
-# Needs the secrets DEPLOY_HOST and DEPLOY_SSH_KEY (Settings → Secrets and variables → Actions).
+# Needs the secrets DEPLOY_HOST and DEPLOY_SSH_KEY (Settings → Secrets and variables → Actions),
+# and SMTP_PASSWORD (the password of the mailbox info@gatra.nl) for the forms.
 # Optional: DEPLOY_USER (variable or secret, default root) and the variable DEPLOY_PATH (default /srv/gatra/public).
 name: Deploy
 on:
@@ -55,3 +56,18 @@ jobs:
             exit 1
           fi
           rsync -rlz --delete --chmod=D755,F644 --rsync-path="$REMOTE_RSYNC" -e "ssh -i ~/.ssh/deploy_key" public/ "$REMOTE_USER@$HOST:$REMOTE_PATH/"
+      - name: Start the form service
+        env:
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        run: |
+          if [ -z "$SMTP_PASSWORD" ]; then
+            echo "::warning::The secret SMTP_PASSWORD is not set, so the form service was not started and the forms cannot send mail."
+            exit 0
+          fi
+          TARGET="$REMOTE_USER@$HOST"
+          DIR="$(dirname "$REMOTE_PATH")/form"
+          ssh -i ~/.ssh/deploy_key "$TARGET" "sudo -n mkdir -p '$DIR/secret' && sudo -n chmod 700 '$DIR/secret'"
+          rsync -rlz --delete --exclude secret --exclude node_modules --chmod=D755,F644 --rsync-path="sudo -n rsync" -e "ssh -i ~/.ssh/deploy_key" server/ "$TARGET:$DIR/"
+          # The mailbox password goes into a file only root can reach; the container gets it read-only.
+          printf '%s\n' "$SMTP_PASSWORD" | ssh -i ~/.ssh/deploy_key "$TARGET" "sudo -n tee '$DIR/secret/smtp_password' > /dev/null && sudo -n chmod 444 '$DIR/secret/smtp_password'"
+          ssh -i ~/.ssh/deploy_key "$TARGET" "sudo -n docker network inspect gatra > /dev/null 2>&1 || sudo -n docker network create gatra; cd '$DIR' && sudo -n docker compose up -d --build && sleep 4 && sudo -n docker compose ps && sudo -n docker compose logs --tail 5"

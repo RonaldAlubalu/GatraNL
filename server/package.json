@@ -1,0 +1,6 @@
+{
+  "name": "gatra-form",
+  "private": true,
+  "type": "module",
+  "dependencies": { "nodemailer": "^7.0.0" }
+}
