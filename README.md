@@ -1,6 +1,6 @@
 # Gatra
 
-The site of Gatra Peshtaz, rebuilt from the Squarespace site as plain pages.
+The site of Gatra Peshtaz, rebuilt from the Squarespace site as plain pages. The main address will be gatra.nl.
 
 - `src/pages/` holds the text of each page, `src/layout.html` the header and footer around it.
 - `node build.mjs` writes the finished pages to `public/`; `node build.mjs serve` also shows them

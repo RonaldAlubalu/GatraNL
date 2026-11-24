@@ -17,6 +17,7 @@ for (const file of readdirSync(join(root, 'src/pages'))) {
   const html = layout
     .replace('{{title}}', meta.title)
     .replace('{{description}}', meta.description)
+    .replace('{{path}}', slug === 'index' ? '/' : `/${slug}`)
     .replace('{{slug}}', slug === 'index' ? 'home' : slug)
     .replace(/\{\{nav:([\w-]+)\}\}/g, (_, name) => (name === slug ? ' aria-current="page"' : ''))
     .replace('{{content}}', content.trim());
